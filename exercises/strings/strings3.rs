@@ -7,7 +7,13 @@
 
 fn trim_me(input: &str) -> String {
     // TODO: Remove whitespace from both ends of a string!
-    ???
+    let mut new_str = String();
+    for char in input{
+        if char != ' '{
+            new_str.append(char);
+        }
+    }
+    return new_str
 }
 
 fn compose_me(input: &str) -> String {
