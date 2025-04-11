@@ -32,7 +32,7 @@ mod my_module {
     use super::Command;
 
     // TODO: Complete the function signature!
-    pub fn transformer(input: ???) -> ??? {
+    pub fn transformer(input: Vector<String, Command>) -> String {
         // TODO: Complete the output declaration!
         let mut output: ??? = vec![];
         for (string, command) in input.iter() {
