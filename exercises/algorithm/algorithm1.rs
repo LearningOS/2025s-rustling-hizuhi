@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -22,6 +21,7 @@ impl<T> Node<T> {
         }
     }
 }
+
 #[derive(Debug)]
 struct LinkedList<T> {
     length: u32,
@@ -69,14 +69,82 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+    where T: std::cmp::PartialOrd + Copy
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        // let mut new_list = Self {
+        //     length: 0,
+        //     start: None,
+        //     end: None,
+        // };
+
+        // let mut i: u32 = 0;
+        // let mut j: u32 = 0;
+        // while i < list_a.length && j < list_b.length{
+        //     let val_a: T = *list_a.get(i.try_into().unwrap()).unwrap();
+        //     let val_b: T = *list_b.get(j.try_into().unwrap()).unwrap();
+        //     if val_a < val_b {
+        //         new_list.add(val_a);
+        //         i += 1;
+        //     }
+        //     else{
+        //         new_list.add(val_b);
+        //         j += 1;
+        //     }
+        // }
+
+        // while i < list_a.length {
+        //     let val_a = *list_a.get(i.try_into().unwrap()).unwrap();
+        //     new_list.add(val_a);
+        //     i += 1;
+        // }
+        
+        // while j < list_b.length {
+        //     let val_b = *list_b.get(j.try_into().unwrap()).unwrap();
+        //     new_list.add(val_b);
+        //     j += 1;
+        // }
+
+        // new_list
+        
+        let mut new_list = Self::new();
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+
+        while let (Some(ptr_a), Some(ptr_b)) = (current_a, current_b) {
+            unsafe {
+                let node_a = &*ptr_a.as_ptr();
+                let node_b = &*ptr_b.as_ptr();
+
+                if node_a.val < node_b.val {
+                    new_list.add(node_a.val);
+                    current_a = node_a.next;
+                } else {
+                    new_list.add(node_b.val);
+                    current_b = node_b.next;
+                }
+            }
         }
+
+        while let Some(ptr_a) = current_a {
+            unsafe {
+                let node_a = &*ptr_a.as_ptr();
+                new_list.add(node_a.val);
+                current_a = node_a.next;
+            }
+        }
+
+        while let Some(ptr_b) = current_b {
+            unsafe {
+                let node_b = &*ptr_b.as_ptr();
+                new_list.add(node_b.val);
+                current_b = node_b.next;
+            }
+        }
+
+        new_list
 	}
 }
 

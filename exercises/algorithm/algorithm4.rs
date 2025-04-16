@@ -37,6 +37,12 @@ where
             right: None,
         }
     }
+
+    fn left(&self) -> Self {
+        *self.left
+    }
+
+
 }
 
 impl<T> BinarySearchTree<T>
@@ -51,6 +57,27 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        let mut cur_ptr = &mut self.root;
+
+        while let Some(node_ptr) = cur_ptr {
+            if (*node_ptr).value == value {
+                return;
+            }
+            prev_ptr = cur_ptr;
+            if value < (*node_ptr).value {
+                cur_ptr = &(*node_ptr).left;
+            } else {
+                cur_ptr = &(*node_ptr).right;
+            }
+        }
+
+        let node = TreeNode::new(value);
+        let mut ptr = (*prev_ptr).unwrap();
+        if ptr.value < value {
+            ptr.right = Some(Box::new(node));
+        } else {
+            ptr.left = Some(Box::new(node)); 
+        }
     }
 
     // Search for a value in the BST
