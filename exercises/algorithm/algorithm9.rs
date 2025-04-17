@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -18,7 +17,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default 
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -37,7 +36,24 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.count += 1;
+        if self.count >= self.items.len() {
+            self.items.push(value);
+        } else {
+            self.items[self.count] = value;
+        }
+        self.sift_up(self.count);
+    }
+
+    fn sift_up(&mut self, mut idx: usize) {
+        while idx > 1 {
+            let parent = self.parent_idx(idx);
+            if (self.comparator)(&self.items[parent], &self.items[idx]) {
+                break;
+            }
+            self.items.swap(parent, idx);
+            idx = parent;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -48,7 +64,7 @@ where
         self.left_child_idx(idx) <= self.count
     }
 
-    fn left_child_idx(&self, idx: usize) -> usize {
+    fn left_child_idx(&self, idx: usize) ->  usize {
         idx * 2
     }
 
@@ -56,10 +72,23 @@ where
         self.left_child_idx(idx) + 1
     }
 
-    fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
-    }
+    // fn smallest_child_idx(&self, idx: usize) -> usize {
+    //     //TODO    
+    //     let left_idx = self.left_child_idx(idx);
+    //     let right_idx = self.right_child_idx(idx);
+
+    //     let child_idx = if right_idx <= self.len() {
+    //         if (self.comparator)(&self.items[self.left_child_idx(idx)], &self.items[self.right_child_idx(idx)]) {
+    //             self.left_child_idx(idx)
+    //         } else {
+    //             self.right_child_idx(idx)
+    //         }
+    //     } else if left_idx <= self.len() {
+    //         left_idx
+    //     } else {
+    //         None
+    //     };
+    // }
 }
 
 impl<T> Heap<T>
@@ -84,8 +113,40 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.len() == 0 {
+            return None;
+        }
+        let last = std::mem::replace(&mut self.items[self.count], T::default());
+        let result = std::mem::replace(&mut self.items[1], last);
+        self.count -= 1;
+
+        if self.len() > 0 {
+            let mut idx = 1;
+            while self.children_present(idx) {
+                let left_idx = self.left_child_idx(idx);
+                let right_idx = self.right_child_idx(idx);
+        
+                let child_idx = if right_idx <= self.len() {
+                    if (self.comparator)(&self.items[left_idx], &self.items[right_idx]) {
+                        left_idx
+                    } else {
+                        right_idx
+                    }
+                } else if left_idx <= self.len() {
+                    left_idx
+                } else {
+                    break;
+                };
+
+                if (self.comparator)(&self.items[idx], &self.items[child_idx]) {
+                    break;
+                }
+                self.items.swap(idx, child_idx);
+                idx = child_idx;
+            }
+        }
+
+        Some(result)
     }
 }
 

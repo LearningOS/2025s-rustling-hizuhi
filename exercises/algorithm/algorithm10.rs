@@ -2,7 +2,6 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -30,6 +29,18 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        if !self.adjacency_table.contains_key(edge.0){
+            self.add_node(edge.0);
+        }
+        if !self.adjacency_table.contains_key(edge.1) {
+            self.add_node(edge.1);
+        }
+        if (edge.0 == edge.1)
+        {
+            panic!("node a can not equals node b");
+        }
+        self.adjacency_table.get_mut(&String::from(edge.0)).unwrap().push((String::from(edge.1), edge.2));
+        self.adjacency_table.get_mut(&String::from(edge.1)).unwrap().push((String::from(edge.0), edge.2));
     }
 }
 pub trait Graph {
@@ -38,10 +49,22 @@ pub trait Graph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
         //TODO
-		true
+        let adj_list = self.adjacency_table_mutable();
+        if !adj_list.contains_key(&String::from(node)) {
+            adj_list.insert(String::from(node), vec![]);
+            return true;
+        }
+        else {
+            return false
+        }
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let adj_list = self.adjacency_table_mutable();
+        if !adj_list.contains_key(edge.0) || !adj_list.contains_key(edge.1) || edge.0 == edge.1 {
+            panic!("value error");
+        }
+        adj_list.get_mut(&String::from(edge.0)).unwrap().push((String::from(edge.1), edge.2));
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()

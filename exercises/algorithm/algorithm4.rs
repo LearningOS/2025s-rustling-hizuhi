@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -37,12 +36,6 @@ where
             right: None,
         }
     }
-
-    fn left(&self) -> Self {
-        *self.left
-    }
-
-
 }
 
 impl<T> BinarySearchTree<T>
@@ -60,30 +53,36 @@ where
         let mut cur_ptr = &mut self.root;
 
         while let Some(node_ptr) = cur_ptr {
-            if (*node_ptr).value == value {
+            if node_ptr.value == value {
                 return;
             }
-            prev_ptr = cur_ptr;
-            if value < (*node_ptr).value {
-                cur_ptr = &(*node_ptr).left;
+
+            if value < node_ptr.value {
+                cur_ptr = &mut node_ptr.left;
             } else {
-                cur_ptr = &(*node_ptr).right;
+                cur_ptr = &mut node_ptr.right;
             }
         }
-
-        let node = TreeNode::new(value);
-        let mut ptr = (*prev_ptr).unwrap();
-        if ptr.value < value {
-            ptr.right = Some(Box::new(node));
-        } else {
-            ptr.left = Some(Box::new(node)); 
-        }
+        
+        *cur_ptr = Some(Box::new(TreeNode::new(value)));
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        let mut cur_ptr = &self.root;
+        while let Some(node_ptr) = cur_ptr {
+            if node_ptr.value == value {
+                return true;
+            }
+
+            if value < node_ptr.value {
+                cur_ptr = &node_ptr.left;
+            } else {
+                cur_ptr = &node_ptr.right;
+            }
+        }
+        false
     }
 }
 
